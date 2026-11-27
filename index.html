@@ -8,291 +8,44 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --paper: #FBF6EE; --card: #FFFDF9; --ink: #2B1D14; --muted: #5E4B3C;
-    --line: #CDB89D; --tint: #F3E7D7; --accent: #B4471A; --cran: #8A2238; --win: #FBE3D2;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, system-ui, sans-serif; }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 32px 20px 48px; display: flex; flex-direction: column; gap: 24px; }
-  .display { font-family: 'Bricolage Grotesque', Inter, sans-serif; font-weight: 800; }
-  header { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: flex-end; border-bottom: 3px solid var(--ink); padding-bottom: 14px; }
-  .eyebrow { margin: 0 0 4px; font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
-  h1 { margin: 0; font-size: 40px; line-height: 1; }
-  .head-right { display: flex; align-items: center; gap: 14px; }
-  .progress { margin: 0; font-size: 14px; font-weight: 600; color: var(--muted); }
-  .reset { min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1.5px solid var(--cran); background: transparent; color: var(--cran); font: 700 13px Inter, sans-serif; cursor: pointer; }
-  .reset.armed { background: var(--cran); color: #fff; }
-  .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: start; }
-  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 560px) { .grid { grid-template-columns: minmax(0, 1fr); } h1 { font-size: 34px; } }
-  section.col { display: flex; flex-direction: column; gap: 10px; }
-  .colhead { height: 32px; display: flex; align-items: baseline; justify-content: space-between; border-bottom: 2px solid var(--ink); }
-  .colhead h2 { margin: 0; font-size: 20px; }
-  .colhead span { font-size: 13px; font-weight: 600; color: var(--muted); }
-  .colhead.play { border-color: var(--accent); } .colhead.play h2 { color: var(--accent); }
-  .card { background: var(--card); border: 1.5px solid var(--line); border-radius: 8px; overflow: hidden; }
-  .card .label { padding: 3px 10px; background: var(--tint); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-  .card.final { border: 2px solid var(--accent); } .card.final .label { background: var(--accent); color: #fff; font-weight: 700; }
-  .card.third { border: 2px solid var(--cran); } .card.third .label { background: var(--cran); color: #fff; font-weight: 700; }
-  .side { display: flex; align-items: center; gap: 8px; padding: 7px 10px; }
-  .side + .side { border-top: 1px solid var(--line); }
-  .side.won { background: var(--win); } .side.won .name { color: var(--accent); }
-  .who { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-  .seed { font-size: 12px; font-weight: 600; color: var(--muted); }
-  .name { font-size: 15px; font-weight: 700; }
-  .name.tbd { color: var(--muted); }
-  .players { font-size: 12px; line-height: 1.3; color: var(--muted); }
-  input.score { width: 48px; height: 44px; flex: none; border: 1.5px solid var(--ink); border-radius: 6px; background: #fff; text-align: center; font: 700 18px Inter, sans-serif; color: var(--ink); }
-  input.score:focus { outline: 3px solid var(--accent); outline-offset: 1px; }
-  input.score:disabled { background: #EFE6DA; border-color: var(--line); }
-  .bye { min-height: 36px; border: 1.5px dashed var(--line); border-radius: 8px; display: flex; align-items: center; gap: 6px; padding: 0 10px; font-size: 12px; color: var(--muted); }
-  .bye b { text-transform: uppercase; letter-spacing: .06em; }
-  .bye span { font-weight: 600; color: var(--ink); }
-  .status { margin: 0; font-size: 12px; line-height: 1.4; color: var(--muted); }
-  .champ { border-radius: 8px; background: var(--ink); display: flex; flex-direction: column; gap: 6px; padding: 16px; }
-  .champ .k { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #F3C9A8; }
-  .champ .n { font-size: 24px; line-height: 1.1; color: var(--paper); }
-  .champ .p { font-size: 13px; color: var(--tint); }
-  .champ .t { font-size: 12px; font-weight: 600; color: #F3C9A8; margin-top: 6px; }
-  .standhead { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; justify-content: space-between; border-bottom: 2px solid var(--ink); padding-bottom: 6px; }
-  .standhead h2 { margin: 0; font-size: 24px; }
-  .standhead span { font-size: 13px; font-weight: 600; color: var(--muted); }
-  .tablebox { overflow-x: auto; }
-  table { width: 100%; min-width: 760px; border-collapse: collapse; background: var(--card); border: 1.5px solid var(--line); }
-  th { padding: 9px 8px; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--ink); text-align: right; }
-  td { padding: 6px 8px; border-bottom: 1px solid var(--line); font-size: 14px; text-align: right; }
-  th.l, td.l { text-align: left; } th.c, td.c { text-align: center; }
-  td.rank { font-size: 16px; font-weight: 800; }
-  td.adj { font-weight: 700; }
-  td .tn { font-weight: 700; } td .tp { font-size: 12px; color: var(--muted); }
-  tr.top-live { background: #F7EEE3; } tr.top-locked { background: var(--win); }
-  td.spot { font-size: 13px; font-weight: 700; }
-  td.spot.f { color: var(--accent); } td.spot.t { color: var(--cran); }
-  .notes { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 12px; line-height: 1.5; color: var(--muted); }
-  .notes p { margin: 0; flex: 1 1 320px; } .notes strong { color: var(--ink); }
+  body { margin: 0; background: #FBF6EE; color: #2B1D14; font-family: Inter, system-ui, sans-serif; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 40px 20px 56px; display: flex; flex-direction: column; gap: 24px; }
+  .eyebrow { margin: 0 0 4px; font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #B4471A; }
+  h1 { margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-weight: 800; font-size: 44px; line-height: 1; }
+  header { border-bottom: 3px solid #2B1D14; padding-bottom: 16px; }
+  .lead { margin: 0; font-size: 16px; line-height: 1.5; color: #5E4B3C; }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 640px) { .cards { grid-template-columns: minmax(0, 1fr); } h1 { font-size: 36px; } }
+  .card { background: #FFFDF9; border: 1.5px solid #CDB89D; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+  .card h2 { margin: 0; font-family: 'Bricolage Grotesque', Inter, sans-serif; font-weight: 800; font-size: 24px; }
+  .card p { margin: 0; font-size: 14px; line-height: 1.5; color: #5E4B3C; }
+  .go { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; border-radius: 8px; background: #B4471A; color: #fff; font-weight: 700; text-decoration: none; }
+  .go:hover { background: #8A2238; }
+  .pdf { font-size: 14px; font-weight: 600; color: #B4471A; }
+  .pdf:hover { color: #8A2238; }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div>
-      <p class="eyebrow">Friendsgiving 2026</p>
-      <h1 class="display">Pickleball Cup</h1>
-    </div>
-    <div class="head-right">
-      <p class="progress" id="progress"></p>
-      <button type="button" class="reset" id="reset">Clear scores</button>
-    </div>
+    <p class="eyebrow">Friendsgiving 2026</p>
+    <h1>Pickleball Cup</h1>
   </header>
-
-  <div class="grid" id="grid"></div>
-
-  <section>
-    <div class="standhead">
-      <h2 class="display">Standings</h2>
-      <span id="standnote"></span>
-    </div>
-    <div class="tablebox">
-      <table>
-        <thead>
-          <tr>
-            <th class="c">Rank</th><th class="l">Team</th><th class="c">Played</th><th class="c">W–L</th>
-            <th>Win %</th><th>Point diff</th><th>Handicap</th><th>Adj. diff / game</th><th class="l">Playoff spot</th>
-          </tr>
-        </thead>
-        <tbody id="standings"></tbody>
-      </table>
-    </div>
-  </section>
-
-  <div class="notes">
-    <p><strong>How the ranking works:</strong> 1) win %; 2) adjusted point differential per game; 3) head-to-head; 4) the lower-rated team gets the edge. A game counts once both scores are in and they differ.</p>
-    <p><strong>Handicap:</strong> each game, the lower-rated team gains 1 point per 20 rating points between the two teams, and the higher-rated team loses the same. Seeds lock once all 12 round-robin games are scored.</p>
+  <p class="lead">Pick the bracket for today's lineup. Each one keeps its own scores.</p>
+  <div class="cards">
+    <section class="card">
+      <h2>Option 1: John plays</h2>
+      <p>8 teams, 4 courts, no byes. Every team plays 3 games, then the Final and 3rd-place game.</p>
+      <a class="go" href="./with-john/">Open Option 1 bracket</a>
+      <a class="pdf" href="./Pickleball-Option1-With-John.pdf">Printable PDF</a>
+    </section>
+    <section class="card">
+      <h2>Option 2: John out</h2>
+      <p>7 teams with Luc as the sub. One team has a bye each round, so bye teams play 2 games.</p>
+      <a class="go" href="./without-john/">Open Option 2 bracket</a>
+      <a class="pdf" href="./Pickleball-Option2-Without-John.pdf">Printable PDF</a>
+    </section>
   </div>
 </div>
-
-<script>
-(function () {
-  var KEY = 'friendsgiving-pickleball-2026-v2';
-  var TEAMS = {
-    1: { name: 'Stuffing Smashers', players: 'Colette & Lara', rating: 520 },
-    2: { name: 'Pilgrim Outlaws', players: 'Cian & Sebastian', rating: 500 },
-    3: { name: 'Gobble Grenades', players: 'John & Julie', rating: 500 },
-    4: { name: 'Turkey Havoc', players: 'Sam & Emma', rating: 500 },
-    5: { name: 'Gravy Vandals', players: 'Tom & Shane', rating: 480 },
-    6: { name: 'Cranberry Carnage', players: 'Chloe & Maya', rating: 460 },
-    7: { name: 'Mashed Mayhem', players: 'Vin & Open', rating: 460 },
-    8: { name: 'The Feast Reapers', players: 'Luc & Natasha', rating: 460 },
-    9: { name: 'Tryptophan Tyrants', players: 'Marc & Andy', rating: 440 }
-  };
-  var ROUNDS = [
-    { title: 'Round 1', time: '0:00', bye: 9, matches: [[6, 7], [2, 5], [4, 8], [1, 3]] },
-    { title: 'Round 2', time: '0:15', bye: 1, matches: [[3, 7], [2, 4], [5, 6], [8, 9]] },
-    { title: 'Round 3', time: '0:30', bye: 5, matches: [[2, 3], [1, 4], [6, 8], [7, 9]] }
-  ];
-  var TOTAL = 12;
-  var scores = load();
-  var armed = false;
-
-  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(scores)); } catch (e) {} }
-  function num(v) { if (v === undefined || v === null || v === '') return null; var n = parseInt(v, 10); return isNaN(n) ? null : n; }
-  function signed(x, d) { var s = d ? x.toFixed(d) : String(x); return x > 0 ? '+' + s : s; }
-  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-  function el(tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html !== undefined) e.innerHTML = html; return e; }
-
-  function compute() {
-    var st = {};
-    Object.keys(TEAMS).forEach(function (id) { st[id] = { id: +id, gp: 0, w: 0, l: 0, diff: 0, hcp: 0, h2h: {} }; });
-    var done = 0;
-    ROUNDS.forEach(function (r, ri) {
-      r.matches.forEach(function (m, mi) {
-        var k = 'r' + ri + 'm' + mi, a = num(scores[k + 'a']), b = num(scores[k + 'b']);
-        if (a === null || b === null || a === b) return;
-        done++;
-        var A = st[m[0]], B = st[m[1]], ra = TEAMS[m[0]].rating, rb = TEAMS[m[1]].rating;
-        A.gp++; B.gp++; A.diff += a - b; B.diff += b - a;
-        A.hcp += (rb - ra) / 20; B.hcp += (ra - rb) / 20;
-        if (a > b) { A.w++; B.l++; A.h2h[m[1]] = 1; B.h2h[m[0]] = -1; }
-        else { B.w++; A.l++; B.h2h[m[0]] = 1; A.h2h[m[1]] = -1; }
-      });
-    });
-    var list = Object.keys(st).map(function (id) {
-      var t = st[id]; t.pct = t.gp ? t.w / t.gp : 0; t.adj = t.gp ? (t.diff + t.hcp) / t.gp : 0; return t;
-    });
-    list.sort(function (x, y) {
-      if (y.pct !== x.pct) return y.pct - x.pct;
-      if (Math.abs(y.adj - x.adj) > 1e-9) return y.adj - x.adj;
-      if (x.h2h[y.id]) return -x.h2h[y.id];
-      return TEAMS[x.id].rating - TEAMS[y.id].rating;
-    });
-    return { list: list, done: done };
-  }
-
-  function sideRow(opts) {
-    var row = el('div', 'side');
-    var who = el('div', 'who');
-    if (opts.seed) who.appendChild(el('span', 'seed', esc(opts.seed)));
-    who.appendChild(el('span', 'name' + (opts.tbd ? ' tbd' : ''), esc(opts.name)));
-    who.appendChild(el('span', 'players', esc(opts.players)));
-    var inp = el('input', 'score');
-    inp.type = 'text'; inp.inputMode = 'numeric'; inp.maxLength = 2; inp.autocomplete = 'off';
-    inp.setAttribute('aria-label', 'Score for ' + opts.name);
-    inp.dataset.key = opts.key; inp.dataset.other = opts.other;
-    inp.value = scores[opts.key] || '';
-    if (opts.disabled) inp.disabled = true;
-    row.appendChild(who); row.appendChild(inp);
-    return row;
-  }
-
-  function buildGrid() {
-    var grid = document.getElementById('grid');
-    grid.innerHTML = '';
-    ROUNDS.forEach(function (r, ri) {
-      var col = el('section', 'col');
-      col.appendChild(el('div', 'colhead', '<h2 class="display">' + r.title + '</h2><span>' + r.time + '</span>'));
-      r.matches.forEach(function (m, mi) {
-        var k = 'r' + ri + 'm' + mi, card = el('div', 'card');
-        card.appendChild(el('div', 'label', 'Court ' + (mi + 1)));
-        card.appendChild(sideRow({ name: TEAMS[m[0]].name, players: TEAMS[m[0]].players, key: k + 'a', other: k + 'b' }));
-        card.appendChild(sideRow({ name: TEAMS[m[1]].name, players: TEAMS[m[1]].players, key: k + 'b', other: k + 'a' }));
-        col.appendChild(card);
-      });
-      col.appendChild(el('div', 'bye', '<b>Bye</b><span>' + esc(TEAMS[r.bye].name) + '</span>'));
-      grid.appendChild(col);
-    });
-    var pc = el('section', 'col');
-    pc.id = 'playoffs';
-    grid.appendChild(pc);
-  }
-
-  function buildPlayoffs(res) {
-    var locked = res.done === TOTAL, list = res.list, pc = document.getElementById('playoffs');
-    var focusKey = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.key : null;
-    pc.innerHTML = '';
-    pc.appendChild(el('div', 'colhead play', '<h2 class="display">Playoffs</h2><span>0:45</span>'));
-    var left = TOTAL - res.done;
-    pc.appendChild(el('p', 'status', locked
-      ? 'Round robin complete: seeds are locked from the final standings.'
-      : left + ' round-robin game' + (left === 1 ? '' : 's') + ' left. Seeds lock when all 12 are scored.'));
-    function pcard(cls, title, i1, i2, k1, k2) {
-      var card = el('div', 'card ' + cls);
-      card.appendChild(el('div', 'label', title));
-      [[i1, k1, k2], [i2, k2, k1]].forEach(function (x, j) {
-        var seedLabel = ['1st', '2nd', '3rd', '4th'][x[0]] + ' seed';
-        var t = locked ? TEAMS[list[x[0]].id] : null;
-        card.appendChild(sideRow({ seed: seedLabel, name: t ? t.name : 'TBD', players: t ? t.players : 'Set after Round 3', tbd: !t, key: x[1], other: x[2], disabled: !locked }));
-      });
-      return card;
-    }
-    pc.appendChild(pcard('final', 'Final · Court 1', 0, 1, 'fa', 'fb'));
-    pc.appendChild(pcard('third', '3rd place · Court 2', 2, 3, 'ta', 'tb'));
-    var champ = 'To be decided', cp = '', third = '';
-    if (locked) {
-      var fa = num(scores.fa), fb = num(scores.fb), ta = num(scores.ta), tb = num(scores.tb);
-      if (fa !== null && fb !== null && fa !== fb) { var c = TEAMS[list[fa > fb ? 0 : 1].id]; champ = c.name; cp = c.players; }
-      if (ta !== null && tb !== null && ta !== tb) third = '3rd place: ' + TEAMS[list[ta > tb ? 2 : 3].id].name;
-    }
-    var box = el('div', 'champ');
-    box.innerHTML = '<span class="k">Champions</span><span class="n display">' + esc(champ) + '</span><span class="p">' + esc(cp) + '</span><span class="t">' + esc(third) + '</span>';
-    pc.appendChild(box);
-    if (focusKey) { var f = pc.querySelector('input[data-key="' + focusKey + '"]'); if (f) { f.focus(); var v = f.value; f.value = ''; f.value = v; } }
-  }
-
-  function refresh() {
-    var res = compute(), locked = res.done === TOTAL;
-    document.getElementById('progress').textContent = res.done + ' of ' + TOTAL + ' games scored';
-    document.querySelectorAll('#grid > section:not(#playoffs) input.score').forEach(function (inp) {
-      var v = num(scores[inp.dataset.key]), o = num(scores[inp.dataset.other]);
-      inp.parentNode.classList.toggle('won', v !== null && o !== null && v > o);
-    });
-    buildPlayoffs(res);
-    document.querySelectorAll('#playoffs input.score').forEach(function (inp) {
-      var v = num(scores[inp.dataset.key]), o = num(scores[inp.dataset.other]);
-      inp.parentNode.classList.toggle('won', locked && v !== null && o !== null && v > o);
-    });
-    document.getElementById('standnote').textContent = locked ? 'Final' : (res.done ? 'Live, updates as you enter scores' : 'Enter scores above');
-    var spots = ['Final · 1st seed', 'Final · 2nd seed', '3rd-place game', '3rd-place game'];
-    var tb = document.getElementById('standings');
-    tb.innerHTML = '';
-    res.list.forEach(function (t, i) {
-      var team = TEAMS[t.id], top = i < 4 && res.done > 0;
-      var tr = el('tr', top ? (locked ? 'top-locked' : 'top-live') : '');
-      var d = t.gp ? null : '–';
-      tr.innerHTML =
-        '<td class="c rank">' + (res.done ? i + 1 : '–') + '</td>' +
-        '<td class="l"><div class="tn">' + esc(team.name) + '</div><div class="tp">' + esc(team.players) + '</div></td>' +
-        '<td class="c">' + t.gp + '</td>' +
-        '<td class="c">' + t.w + '–' + t.l + '</td>' +
-        '<td>' + (d || Math.round(t.pct * 100) + '%') + '</td>' +
-        '<td>' + (d || signed(t.diff)) + '</td>' +
-        '<td>' + (d || signed(t.hcp)) + '</td>' +
-        '<td class="adj">' + (d || signed(t.adj, 2)) + '</td>' +
-        '<td class="l spot ' + (i < 2 ? 'f' : 't') + '">' + (top ? spots[i] + (locked ? '' : ' (for now)') : '') + '</td>';
-      tb.appendChild(tr);
-    });
-  }
-
-  document.getElementById('grid').addEventListener('input', function (e) {
-    var inp = e.target;
-    if (!inp.classList || !inp.classList.contains('score')) return;
-    var clean = inp.value.replace(/[^0-9]/g, '').slice(0, 2);
-    if (clean !== inp.value) inp.value = clean;
-    scores[inp.dataset.key] = clean;
-    save(); disarm(); refresh();
-  });
-
-  var resetBtn = document.getElementById('reset');
-  function disarm() { armed = false; resetBtn.classList.remove('armed'); resetBtn.textContent = 'Clear scores'; }
-  resetBtn.addEventListener('click', function () {
-    if (!armed) { armed = true; resetBtn.classList.add('armed'); resetBtn.textContent = 'Tap again to clear all'; return; }
-    scores = {}; save(); disarm(); buildGrid(); refresh();
-  });
-
-  buildGrid();
-  refresh();
-})();
-</script>
 </body>
 </html>
